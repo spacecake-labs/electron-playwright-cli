@@ -128,8 +128,10 @@ async function connectToSocket(socketPath) {
 async function connectToDaemon(sessionName) {
   const socketPath = daemonSocketPath(sessionName);
 
-  // try to connect to existing daemon
-  if (await socketExists(socketPath)) {
+  // try to connect to existing daemon.
+  // on Windows, named pipes aren't detected by stat().isSocket(),
+  // so we always attempt a direct connection.
+  if (os.platform() === "win32" || (await socketExists(socketPath))) {
     try {
       const socket = await connectToSocket(socketPath);
       return new SocketSession(socket);
