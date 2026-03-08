@@ -71,7 +71,11 @@ class ElectronContextFactory {
     const timeout = ready.timeout ?? 10000;
 
     // if user provided custom conditions, use those
-    if (ready.waitForLoadState || ready.waitForSelector || ready.waitForFunction) {
+    if (
+      ready.waitForLoadState ||
+      ready.waitForSelector ||
+      ready.waitForFunction
+    ) {
       if (ready.waitForLoadState) {
         await page
           .waitForLoadState(ready.waitForLoadState, { timeout })
@@ -97,8 +101,8 @@ class ElectronContextFactory {
       .evaluate(
         () =>
           new Promise((resolve) =>
-            requestAnimationFrame(() => requestAnimationFrame(resolve))
-          )
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          ),
       )
       .catch(() => {});
   }
