@@ -1,0 +1,10 @@
+{
+  "browser": {
+    "launchOptions": {
+      "args": ["--no-sandbox", "tests/fixtures/main-delayed-selector.js"]
+    },
+    "readyCondition": {
+      "waitForSelector": "#title"
+    }
+  }
+}

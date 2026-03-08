@@ -1,0 +1,10 @@
+{
+  "browser": {
+    "launchOptions": {
+      "args": ["--no-sandbox", "tests/fixtures/main-delayed-function.js"]
+    },
+    "readyCondition": {
+      "waitForFunction": "document.body.classList.contains('ready')"
+    }
+  }
+}
