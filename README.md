@@ -68,6 +68,8 @@ npx skills add spacecake-labs/electron-playwright-cli
 
 Works with Claude Code, Cursor, Codex, and [40+ other agents](https://skills.sh).
 
+## try [spacecake](https://spacecake.ai) — the best interface for claude code
+
 ## Upstream
 
 This project is a fork of [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli), licensed under Apache-2.0.
