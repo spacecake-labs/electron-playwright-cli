@@ -203,7 +203,7 @@ async function main() {
   const args = require("minimist")(argv);
 
   if (args.version || args.v) {
-    const pkg = require("playwright/package.json");
+    const pkg = require("./package.json");
     console.log(pkg.version);
     process.exit(0);
   }

@@ -33,6 +33,8 @@ Create `.playwright/cli.config.json` in your project root:
 
 The `args` array is passed to Electron. Point it at your app's main process entry point.
 
+The daemon shuts down automatically when the Electron app closes (via `close` or the app exiting on its own). The next command spawns a fresh daemon that reads the current config from disk, so config changes take effect immediately — no need to manually kill the daemon.
+
 Optional launch options:
 - `executablePath`: path to the Electron binary (defaults to the one in node_modules)
 - `cwd`: working directory for the Electron process
