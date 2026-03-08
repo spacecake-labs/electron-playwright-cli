@@ -33,6 +33,19 @@ class ElectronContextFactory {
         await electronApp.firstWindow();
       }
 
+      // wait for the page to finish loading before handing it off —
+      // without this, screenshots taken immediately can capture a blank page
+      const firstPage = browserContext.pages()[0];
+      if (firstPage) {
+        await firstPage
+          .waitForLoadState("domcontentloaded", { timeout: 10000 })
+          .catch(() => {});
+      }
+
+      electronApp.process().on("exit", () => {
+        setTimeout(() => process.exit(0), 1000);
+      });
+
       return {
         browserContext,
         close: async () => {

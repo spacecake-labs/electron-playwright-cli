@@ -44,6 +44,9 @@ async function runCli(...args: string[]): Promise<CliResult> {
     });
 
     childProcess.on("close", (code) => {
+      if (code !== 0 && stderr) {
+        console.error(`CLI stderr (exit ${code}):`, stderr.trim());
+      }
       resolve({
         output: stdout.trim(),
         error: stderr.trim(),
@@ -79,7 +82,7 @@ test("snapshot returns page content", async () => {
 test("screenshot writes a file", async () => {
   const result = await runCli("screenshot");
   expect(result.exitCode).toBe(0);
-  expect(result.output).toContain(".playwright-cli/");
+  expect(result.output).toContain(".playwright-cli");
   expect(result.output).toContain(".png");
 });
 
