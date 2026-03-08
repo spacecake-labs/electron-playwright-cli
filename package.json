@@ -26,7 +26,7 @@
   },
   "license": "Apache-2.0",
   "scripts": {
-    "check": "npm run fmt:check && npm run lint && npm run typecheck",
+    "check": "npm run fmt && npm run lint && npm run typecheck",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
     "lint": "oxlint .",

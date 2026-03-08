@@ -33,13 +33,11 @@ class ElectronContextFactory {
         await electronApp.firstWindow();
       }
 
-      // wait for the page to finish loading before handing it off —
+      // wait for the page to be ready before handing it off —
       // without this, screenshots taken immediately can capture a blank page
       const firstPage = browserContext.pages()[0];
       if (firstPage) {
-        await firstPage
-          .waitForLoadState("domcontentloaded", { timeout: 10000 })
-          .catch(() => {});
+        await this._waitForReady(firstPage);
       }
 
       electronApp.process().on("exit", () => {
@@ -56,6 +54,57 @@ class ElectronContextFactory {
       await electronApp.close().catch(() => {});
       throw e;
     }
+  }
+
+  // waits for the app to be ready using either user-provided conditions
+  // from config.browser.readyCondition, or a sensible default.
+  //
+  // config example:
+  //   "readyCondition": {
+  //     "waitForLoadState": "load",
+  //     "waitForSelector": "[data-testid='app-ready']",
+  //     "waitForFunction": "document.fonts.ready",
+  //     "timeout": 10000
+  //   }
+  async _waitForReady(page) {
+    const ready = this.config.browser?.readyCondition ?? {};
+    const timeout = ready.timeout ?? 10000;
+
+    // if user provided custom conditions, use those
+    if (
+      ready.waitForLoadState ||
+      ready.waitForSelector ||
+      ready.waitForFunction
+    ) {
+      if (ready.waitForLoadState) {
+        await page
+          .waitForLoadState(ready.waitForLoadState, { timeout })
+          .catch(() => {});
+      }
+      if (ready.waitForSelector) {
+        await page
+          .waitForSelector(ready.waitForSelector, { state: "visible", timeout })
+          .catch(() => {});
+      }
+      if (ready.waitForFunction) {
+        await page
+          .waitForFunction(ready.waitForFunction, null, { timeout })
+          .catch(() => {});
+      }
+    } else {
+      // default: wait for load event (all resources loaded)
+      await page.waitForLoadState("load", { timeout }).catch(() => {});
+    }
+
+    // always wait for at least one paint frame to ensure pixels are rendered
+    await page
+      .evaluate(
+        () =>
+          new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          ),
+      )
+      .catch(() => {});
   }
 }
 
