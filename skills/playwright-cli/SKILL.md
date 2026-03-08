@@ -39,6 +39,33 @@ Optional launch options:
 - `env`: additional environment variables
 - `timeout`: launch timeout in milliseconds
 
+### App readiness
+
+By default, the CLI waits for the `load` event and a paint frame before accepting commands. For apps with async rendering (React, etc.), use `readyCondition` to tell the CLI when your app is actually ready:
+
+```json
+{
+  "browser": {
+    "launchOptions": {
+      "args": ["main.js"]
+    },
+    "readyCondition": {
+      "waitForSelector": "[data-testid='app-ready']",
+      "timeout": 10000
+    }
+  }
+}
+```
+
+Available options (all optional, can be combined):
+
+| Option | Type | Description |
+|---|---|---|
+| `waitForSelector` | CSS selector | Waits for the element to be visible |
+| `waitForFunction` | JS expression | Waits for the expression to return truthy (e.g. `"document.fonts.ready"`) |
+| `waitForLoadState` | `"load"` \| `"domcontentloaded"` \| `"networkidle"` | Waits for the specified load state |
+| `timeout` | number (ms) | Timeout for all conditions (default: 10000) |
+
 ## Commands
 
 ### Core
