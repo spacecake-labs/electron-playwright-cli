@@ -1,5 +1,11 @@
 # electron-playwright-cli
 
+## 0.1.2
+
+### Patch Changes
+
+- 2eceb03: Feat: 'wait for' config options.
+
 ## 0.1.1
 
 ### Patch Changes
