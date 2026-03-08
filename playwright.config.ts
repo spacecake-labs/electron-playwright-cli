@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
-  fullyParallel: true,
+  testDir: "./tests",
+  fullyParallel: false, // tests share a daemon session, run serially
   forbidOnly: !!process.env.CI,
-  workers: process.env.CI ? 2 : undefined,
-  reporter: 'list',
+  workers: 1, // single worker since tests share session state
+  reporter: "list",
+  timeout: 30000,
 });

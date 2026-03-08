@@ -1,169 +1,145 @@
-# Browser Session Management
+# Session Management
 
-Run multiple isolated browser sessions concurrently with state persistence.
+Run multiple isolated Electron app sessions concurrently with state persistence.
 
-## Named Browser Sessions
+## Named Sessions
 
-Use `-s` flag to isolate browser contexts:
+Use `-s` flag to isolate Electron app instances:
 
 ```bash
-# Browser 1: Authentication flow
-playwright-cli -s=auth open https://app.example.com/login
+# Session 1: Main app interaction
+electron-playwright-cli -s=main snapshot
 
-# Browser 2: Public browsing (separate cookies, storage)
-playwright-cli -s=public open https://example.com
+# Session 2: Separate instance (independent cookies, storage)
+electron-playwright-cli -s=secondary snapshot
 
-# Commands are isolated by browser session
-playwright-cli -s=auth fill e1 "user@example.com"
-playwright-cli -s=public snapshot
+# Commands are isolated by session
+electron-playwright-cli -s=main fill e1 "user@example.com"
+electron-playwright-cli -s=secondary click e3
 ```
 
-## Browser Session Isolation Properties
+## Session Isolation Properties
 
-Each browser session has independent:
+Each session has independent:
 - Cookies
 - LocalStorage / SessionStorage
 - IndexedDB
 - Cache
-- Browsing history
-- Open tabs
+- Open windows
 
-## Browser Session Commands
+## Session Commands
 
 ```bash
-# List all browser sessions
-playwright-cli list
+# List all sessions
+electron-playwright-cli list
 
-# Stop a browser session (close the browser)
-playwright-cli close                # stop the default browser
-playwright-cli -s=mysession close   # stop a named browser
+# Stop a session (close the Electron app)
+electron-playwright-cli close                # stop the default session
+electron-playwright-cli -s=mysession close   # stop a named session
 
-# Stop all browser sessions
-playwright-cli close-all
+# Stop all sessions
+electron-playwright-cli close-all
 
 # Forcefully kill all daemon processes (for stale/zombie processes)
-playwright-cli kill-all
+electron-playwright-cli kill-all
 
-# Delete browser session user data (profile directory)
-playwright-cli delete-data                # delete default browser data
-playwright-cli -s=mysession delete-data   # delete named browser data
+# Delete session user data (profile directory)
+electron-playwright-cli delete-data                # delete default session data
+electron-playwright-cli -s=mysession delete-data   # delete named session data
 ```
 
 ## Environment Variable
 
-Set a default browser session name via environment variable:
+Set a default session name via environment variable:
 
 ```bash
 export PLAYWRIGHT_CLI_SESSION="mysession"
-playwright-cli open example.com  # Uses "mysession" automatically
+electron-playwright-cli snapshot  # Uses "mysession" automatically
 ```
 
 ## Common Patterns
 
-### Concurrent Scraping
+### Multiple App Instances
 
 ```bash
-#!/bin/bash
-# Scrape multiple sites concurrently
+# Launch two instances of your Electron app
+electron-playwright-cli -s=instance1 snapshot
+electron-playwright-cli -s=instance2 snapshot
 
-# Start all browsers
-playwright-cli -s=site1 open https://site1.com &
-playwright-cli -s=site2 open https://site2.com &
-playwright-cli -s=site3 open https://site3.com &
-wait
+# Interact with each independently
+electron-playwright-cli -s=instance1 fill e1 "user-a@example.com"
+electron-playwright-cli -s=instance2 fill e1 "user-b@example.com"
 
-# Take snapshots from each
-playwright-cli -s=site1 snapshot
-playwright-cli -s=site2 snapshot
-playwright-cli -s=site3 snapshot
+# Compare screenshots
+electron-playwright-cli -s=instance1 screenshot --filename=instance1.png
+electron-playwright-cli -s=instance2 screenshot --filename=instance2.png
 
 # Cleanup
-playwright-cli close-all
+electron-playwright-cli close-all
 ```
 
-### A/B Testing Sessions
+### Testing Different App States
 
 ```bash
-# Test different user experiences
-playwright-cli -s=variant-a open "https://app.com?variant=a"
-playwright-cli -s=variant-b open "https://app.com?variant=b"
+# Test with different configurations or data
+electron-playwright-cli -s=fresh snapshot
+electron-playwright-cli -s=with-data snapshot
 
-# Compare
-playwright-cli -s=variant-a screenshot
-playwright-cli -s=variant-b screenshot
+# Take screenshots for comparison
+electron-playwright-cli -s=fresh screenshot
+electron-playwright-cli -s=with-data screenshot
 ```
 
-### Persistent Profile
+## Default Session
 
-By default, browser profile is kept in memory only. Use `--persistent` flag on `open` to persist the browser profile to disk:
+When `-s` is omitted, commands use the default session:
 
 ```bash
-# Use persistent profile (auto-generated location)
-playwright-cli open https://example.com --persistent
-
-# Use persistent profile with custom directory
-playwright-cli open https://example.com --profile=/path/to/profile
+# These use the same default session
+electron-playwright-cli snapshot
+electron-playwright-cli click e3
+electron-playwright-cli close  # Stops the default session
 ```
 
-## Default Browser Session
+## Session Configuration
 
-When `-s` is omitted, commands use the default browser session:
-
-```bash
-# These use the same default browser session
-playwright-cli open https://example.com
-playwright-cli snapshot
-playwright-cli close  # Stops default browser
-```
-
-## Browser Session Configuration
-
-Configure a browser session with specific settings when opening:
+Configure a session with a specific config file:
 
 ```bash
-# Open with config file
-playwright-cli open https://example.com --config=.playwright/my-cli.json
-
-# Open with specific browser
-playwright-cli open https://example.com --browser=firefox
-
-# Open in headed mode
-playwright-cli open https://example.com --headed
-
-# Open with persistent profile
-playwright-cli open https://example.com --persistent
+# Use a custom config file
+electron-playwright-cli --config=.playwright/my-cli.json snapshot
 ```
 
 ## Best Practices
 
-### 1. Name Browser Sessions Semantically
+### 1. Name Sessions Semantically
 
 ```bash
 # GOOD: Clear purpose
-playwright-cli -s=github-auth open https://github.com
-playwright-cli -s=docs-scrape open https://docs.example.com
+electron-playwright-cli -s=login-test snapshot
+electron-playwright-cli -s=settings-test snapshot
 
 # AVOID: Generic names
-playwright-cli -s=s1 open https://github.com
+electron-playwright-cli -s=s1 snapshot
 ```
 
 ### 2. Always Clean Up
 
 ```bash
-# Stop browsers when done
-playwright-cli -s=auth close
-playwright-cli -s=scrape close
+# Stop sessions when done
+electron-playwright-cli -s=login-test close
+electron-playwright-cli -s=settings-test close
 
 # Or stop all at once
-playwright-cli close-all
+electron-playwright-cli close-all
 
-# If browsers become unresponsive or zombie processes remain
-playwright-cli kill-all
+# If sessions become unresponsive or zombie processes remain
+electron-playwright-cli kill-all
 ```
 
-### 3. Delete Stale Browser Data
+### 3. Delete Stale Session Data
 
 ```bash
-# Remove old browser data to free disk space
-playwright-cli -s=oldsession delete-data
+# Remove old session data to free disk space
+electron-playwright-cli -s=oldsession delete-data
 ```

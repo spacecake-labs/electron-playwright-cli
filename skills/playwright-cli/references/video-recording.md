@@ -1,21 +1,20 @@
 # Video Recording
 
-Capture browser automation sessions as video for debugging, documentation, or verification. Produces WebM (VP8/VP9 codec).
+Capture Electron app automation sessions as video for debugging, documentation, or verification. Produces WebM (VP8/VP9 codec).
 
 ## Basic Recording
 
 ```bash
 # Start recording
-playwright-cli video-start
+electron-playwright-cli video-start
 
 # Perform actions
-playwright-cli open https://example.com
-playwright-cli snapshot
-playwright-cli click e1
-playwright-cli fill e2 "test input"
+electron-playwright-cli snapshot
+electron-playwright-cli click e1
+electron-playwright-cli fill e2 "test input"
 
 # Stop and save
-playwright-cli video-stop demo.webm
+electron-playwright-cli video-stop demo.webm
 ```
 
 ## Best Practices
@@ -24,8 +23,8 @@ playwright-cli video-stop demo.webm
 
 ```bash
 # Include context in filename
-playwright-cli video-stop recordings/login-flow-2024-01-15.webm
-playwright-cli video-stop recordings/checkout-test-run-42.webm
+electron-playwright-cli video-stop recordings/login-flow-2024-01-15.webm
+electron-playwright-cli video-stop recordings/settings-test-run-42.webm
 ```
 
 ## Tracing vs Video

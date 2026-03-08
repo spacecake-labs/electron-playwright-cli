@@ -1,52 +1,53 @@
 # Test Generation
 
-Generate Playwright test code automatically as you interact with the browser.
+Generate Playwright test code automatically as you interact with your Electron app.
 
 ## How It Works
 
-Every action you perform with `playwright-cli` generates corresponding Playwright TypeScript code.
+Every action you perform with `electron-playwright-cli` generates corresponding Playwright TypeScript code.
 This code appears in the output and can be copied directly into your test files.
 
 ## Example Workflow
 
 ```bash
-# Start a session
-playwright-cli open https://example.com/login
-
 # Take a snapshot to see elements
-playwright-cli snapshot
+electron-playwright-cli snapshot
 # Output shows: e1 [textbox "Email"], e2 [textbox "Password"], e3 [button "Sign In"]
 
 # Fill form fields - generates code automatically
-playwright-cli fill e1 "user@example.com"
+electron-playwright-cli fill e1 "user@example.com"
 # Ran Playwright code:
 # await page.getByRole('textbox', { name: 'Email' }).fill('user@example.com');
 
-playwright-cli fill e2 "password123"
+electron-playwright-cli fill e2 "password123"
 # Ran Playwright code:
 # await page.getByRole('textbox', { name: 'Password' }).fill('password123');
 
-playwright-cli click e3
+electron-playwright-cli click e3
 # Ran Playwright code:
 # await page.getByRole('button', { name: 'Sign In' }).click();
 ```
 
 ## Building a Test File
 
-Collect the generated code into a Playwright test:
+Collect the generated code into a Playwright test for your Electron app:
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect, _electron as electron } from '@playwright/test';
 
-test('login flow', async ({ page }) => {
-  // Generated code from playwright-cli session:
-  await page.goto('https://example.com/login');
+test('login flow', async () => {
+  const electronApp = await electron.launch({ args: ['path/to/main.js'] });
+  const page = await electronApp.firstWindow();
+
+  // Generated code from electron-playwright-cli session:
   await page.getByRole('textbox', { name: 'Email' }).fill('user@example.com');
   await page.getByRole('textbox', { name: 'Password' }).fill('password123');
   await page.getByRole('button', { name: 'Sign In' }).click();
 
   // Add assertions
-  await expect(page).toHaveURL(/.*dashboard/);
+  await expect(page.getByText('Dashboard')).toBeVisible();
+
+  await electronApp.close();
 });
 ```
 
@@ -66,13 +67,12 @@ await page.locator('#submit-btn').click();
 
 ### 2. Explore Before Recording
 
-Take snapshots to understand the page structure before recording actions:
+Take snapshots to understand the app structure before recording actions:
 
 ```bash
-playwright-cli open https://example.com
-playwright-cli snapshot
+electron-playwright-cli snapshot
 # Review the element structure
-playwright-cli click e5
+electron-playwright-cli click e5
 ```
 
 ### 3. Add Assertions Manually

@@ -1,31 +1,62 @@
 {
-  "name": "@playwright/cli",
-  "version": "0.1.1",
-  "description": "Playwright CLI",
+  "name": "electron-playwright-cli",
+  "version": "0.1.0",
+  "description": "Playwright CLI with Electron app support",
+  "keywords": [
+    "playwright",
+    "electron",
+    "cli",
+    "testing",
+    "automation",
+    "desktop"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/microsoft/playwright-cli.git"
+    "url": "git+https://github.com/spacecake-labs/electron-playwright-cli.git"
   },
-  "homepage": "https://playwright.dev",
+  "homepage": "https://github.com/spacecake-labs/electron-playwright-cli",
+  "bugs": {
+    "url": "https://github.com/spacecake-labs/electron-playwright-cli/issues"
+  },
   "engines": {
     "node": ">=18"
   },
   "author": {
-    "name": "Microsoft Corporation"
+    "name": "Spacecake Labs"
   },
   "license": "Apache-2.0",
   "scripts": {
-    "test": "playwright test"
+    "check": "npm run fmt:check && npm run lint && npm run typecheck",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
+  "files": [
+    "playwright-cli.js",
+    "playwright-electron/",
+    "skills/"
+  ],
   "devDependencies": {
     "@playwright/test": "1.59.0-alpha-1771104257000",
-    "@types/node": "^25.2.1"
+    "@types/node": "^25.2.1",
+    "electron": "^35.0.0",
+    "oxfmt": "^0.7.0",
+    "oxlint": "^0.16.0",
+    "typescript": "^5.7.0",
+    "@changesets/cli": "^2.27.0"
   },
   "dependencies": {
-    "minimist": "^1.2.5",
-    "playwright": "1.59.0-alpha-1771104257000"
+    "minimist": "^1.2.5"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.52.0"
   },
   "bin": {
-    "playwright-cli": "playwright-cli.js"
+    "electron-playwright-cli": "playwright-cli.js"
   }
 }
