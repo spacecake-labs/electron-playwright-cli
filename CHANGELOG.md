@@ -1,5 +1,11 @@
 # electron-playwright-cli
 
+## 0.1.3
+
+### Patch Changes
+
+- 74ad52f: Shutdown daemon when Electron app closes.
+
 ## 0.1.2
 
 ### Patch Changes
