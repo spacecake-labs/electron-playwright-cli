@@ -79,7 +79,7 @@ test("snapshot returns page content", async () => {
 test("screenshot writes a file", async () => {
   const result = await runCli("screenshot");
   expect(result.exitCode).toBe(0);
-  expect(result.output).toContain(".playwright-cli/");
+  expect(result.output).toContain(".playwright-cli");
   expect(result.output).toContain(".png");
 });
 

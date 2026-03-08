@@ -42,6 +42,10 @@ class ElectronContextFactory {
           .catch(() => {});
       }
 
+      electronApp.process().on("exit", () => {
+        setTimeout(() => process.exit(0), 1000);
+      });
+
       return {
         browserContext,
         close: async () => {
