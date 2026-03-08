@@ -60,6 +60,14 @@ All standard commands from playwright-cli are available: `goto`, `snapshot`, `cl
 
 electron-playwright-cli replaces the standard browser launch flow with a custom daemon that composes Playwright's internal `BrowserServerBackend` with an `ElectronContextFactory`. When you run a command, the CLI client spawns (or connects to) a background daemon process that launches your Electron app via `playwright._electron.launch()`, registers Electron-specific tools (like `electron_evaluate` and `electron_windows`) into Playwright's tool registry, and exposes the full Playwright CLI command surface over a Unix socket using newline-delimited JSON.
 
+## Install as Agent Skill
+
+```bash
+npx skills add spacecake-labs/electron-playwright-cli
+```
+
+Works with Claude Code, Cursor, Codex, and [40+ other agents](https://skills.sh).
+
 ## Upstream
 
 This project is a fork of [microsoft/playwright-cli](https://github.com/microsoft/playwright-cli), licensed under Apache-2.0.
