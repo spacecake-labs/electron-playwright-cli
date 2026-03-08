@@ -1,7 +1,7 @@
 {
   "browser": {
     "launchOptions": {
-      "args": ["tests/fixtures/main.js"]
+      "args": ["--no-sandbox", "tests/fixtures/main.js"]
     }
   }
 }

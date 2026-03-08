@@ -44,6 +44,9 @@ async function runCli(...args: string[]): Promise<CliResult> {
     });
 
     childProcess.on("close", (code) => {
+      if (code !== 0 && stderr) {
+        console.error(`CLI stderr (exit ${code}):`, stderr.trim());
+      }
       resolve({
         output: stdout.trim(),
         error: stderr.trim(),
